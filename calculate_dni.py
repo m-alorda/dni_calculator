@@ -1,5 +1,6 @@
 from typing import Generator, Optional, List, Union
 from dataclasses import dataclass
+import itertools
 
 import fire
 
@@ -16,7 +17,10 @@ class Dni:
         self.letter = letter
 
     def get_number(self) -> int:
-        return int(''.join(self.digits))
+        return int(self.get_number_as_str())
+
+    def get_number_as_str(self) -> str:
+        return ''.join(self.digits)
 
     def __str__(self):
         return ''.join(self.digits) + self.letter
@@ -103,6 +107,16 @@ class DniCalculator:
             return None
         dni.letter = self._LETTERS[dni.get_number() % 23]
         return dni
+
+    def _check_valid(self, dni: Dni) -> bool:
+        '''Check whether the given dni is valid
+
+        Args:
+            dni: A Dni with all digits and letter present
+                Example: Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
+        '''
+        return self.find_letter(dni.get_number_as_str()).letter == dni.letter
+
         
 
     def find_missing_num(self, dni_str: str) -> Dni:
@@ -129,14 +143,23 @@ class DniCalculator:
             print(f'Cannot fing missing numbers if no letter is given: "{dni_str}"')
             return None
 
-        missing_digits = [digit for digit in dni.digits if digit is None]
-        if len(missing_digits) == 0:
-            if self.find_letter(dni.get_number()).letter == dni.letter:
+        missing_digits_pos = [i for i, digit in enumerate(dni.digits) if digit is None]
+        num_missing_digits = len(missing_digits_pos)
+        if num_missing_digits == 0:
+            if self._check_valid(dni):
                 print(f'The given dni is already complete and valid: "{dni_str}"')
                 return dni
             else:
                 print(f'All digits provided. Unable to find missing ones "{dni_str}"')
                 return None
+
+        for attempt in range(10 ** num_missing_digits):
+            missing_digits_attempt = list(str(attempt).zfill(num_missing_digits))
+            for missing_pos, missing_digits_attempt in zip(missing_digits_pos, missing_digits_attempt):
+                dni.digits[missing_pos] = missing_digits_attempt
+            if self._check_valid(dni):
+                return dni
+
 
     def find_all_possible_dnis(self, dni: str) -> Generator[Dni, str, None]:
         yield

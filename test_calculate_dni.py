@@ -90,6 +90,12 @@ class TestDniCalculator:
         expected_dni = Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
         assert self.dni_calc.find_missing_num('11_111_?11H') == expected_dni
 
+    def test_find_missing_num_more_than_one_missing_num(self):
+        for i in range(DniParser.ID_LENGTH_NUMS_ONLY + 1):
+            dni = '?'*i + '1'*(DniParser.ID_LENGTH_NUMS_ONLY-i) + 'H'
+            LOGGER.info(f'Testing {dni}')
+            assert self.dni_calc.find_missing_num(dni) is not None
+
     def test_find_missing_num_invalid_input(self):
         INVALID_DNIS = (
             # Invalid length tests
