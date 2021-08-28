@@ -53,8 +53,11 @@ class TestDniParser:
 class TestDniCalculator:
     dni_calc = DniCalculator()
 
-    def test_find_letter_(self):
-        assert self.dni_calc.find_letter('11_111_111') == '11_111_111H'
+    def test_find_letter(self):
+        assert self.dni_calc.find_letter('11_111_111') == Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
+
+    def test_find_missing_num(self):
+        assert self.dni_calc.find_missing_num('11_111_?11H') == Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
 
 
 if __name__ == '__main__':

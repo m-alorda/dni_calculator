@@ -1,4 +1,4 @@
-from typing import Generator, Optional, List
+from typing import Generator, Optional, List, Union
 from dataclasses import dataclass
 
 import fire
@@ -29,11 +29,13 @@ class DniParser:
     UNKNOWN_DIGIT = '?'
     IGNORED_CHARS = '_-.'
 
-    def parse_dni_without_letter(self, dni_str: str) -> Dni:
+    def parse_dni_without_letter(self, dni_str: Union[str, int]) -> Dni:
         '''Transform a string representation of a dni (without letter) to a Dni
 
         See parse_dni for allowed input
         '''
+        if type(dni_str is int):
+            dni_str = str(dni_str)
         dni = self.parse_dni(dni_str + self.UNKNOWN_DIGIT)
 
         return dni
@@ -86,7 +88,7 @@ class DniCalculator:
     def __init__(self):
         self.parser = DniParser()
 
-    def find_letter(self, dni_str: int) -> str:
+    def find_letter(self, dni_str: Union[str, int]) -> Dni:
         '''Find the letter corresponding to the given dni
 
         Examples:
@@ -98,11 +100,12 @@ class DniCalculator:
         '''
         dni = self.parser.parse_dni_without_letter(dni_str)
         if dni is None:
-            return
-        return str(dni_str) + self._LETTERS[dni.get_number() % 23]
+            return None
+        dni.letter = self._LETTERS[dni.get_number() % 23]
+        return dni
         
 
-    def find_missing_num(self, dni_str: str) -> str:
+    def find_missing_num(self, dni_str: str) -> Dni:
         '''Find the first complete dni valdni for the given dni
 
         Args:
@@ -122,7 +125,7 @@ class DniCalculator:
         if dni is None:
             return
 
-    def find_all_possible_dnis(self, dni: str) -> Generator[str, str, None]:
+    def find_all_possible_dnis(self, dni: str) -> Generator[Dni, str, None]:
         yield
 
 
