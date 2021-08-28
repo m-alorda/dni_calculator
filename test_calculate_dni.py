@@ -120,6 +120,10 @@ class TestDniCalculator:
         for invalid_dni in INVALID_DNIS:
             assert self.dni_calc.find_missing_num(invalid_dni) is None
 
+    def test_find_missing_num_valid_dni_provided(self):
+        expected_dni = Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
+        assert self.dni_calc.find_missing_num('11_111_111-H') == expected_dni
+
 
 if __name__ == '__main__':
     pytest.main()

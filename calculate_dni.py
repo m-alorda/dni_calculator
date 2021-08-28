@@ -106,7 +106,7 @@ class DniCalculator:
         
 
     def find_missing_num(self, dni_str: str) -> Dni:
-        '''Find the first complete dni valdni for the given dni
+        '''Find the first complete dni valid for the given dni
 
         Args:
             dni_str: The dni for which to find the missing numbers
@@ -123,7 +123,20 @@ class DniCalculator:
         '''
         dni = self.parser.parse_dni(dni_str)
         if dni is None:
-            return
+            return None
+
+        if dni.letter == None:
+            print(f'Cannot fing missing numbers if no letter is given: "{dni_str}"')
+            return None
+
+        missing_digits = [digit for digit in dni.digits if digit is None]
+        if len(missing_digits) == 0:
+            if self.find_letter(dni.get_number()).letter == dni.letter:
+                print(f'The given dni is already complete and valid: "{dni_str}"')
+                return dni
+            else:
+                print(f'All digits provided. Unable to find missing ones "{dni_str}"')
+                return None
 
     def find_all_possible_dnis(self, dni: str) -> Generator[Dni, str, None]:
         yield
