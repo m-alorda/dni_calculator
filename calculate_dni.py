@@ -105,8 +105,11 @@ class DniCalculator:
         dni = self.parser.parse_dni_without_letter(dni_str)
         if dni is None:
             return None
-        dni.letter = self._LETTERS[dni.get_number() % 23]
+        dni.letter = self._get_letter(dni.get_number())
         return dni
+
+    def _get_letter(self, dni_number: int) -> str:
+        return self._LETTERS[dni_number % 23]
 
     def _check_valid(self, dni: Dni) -> bool:
         '''Check whether the given dni is valid
@@ -115,12 +118,28 @@ class DniCalculator:
             dni: A Dni with all digits and letter present
                 Example: Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
         '''
-        return self.find_letter(dni.get_number_as_str()).letter == dni.letter
-
-        
-
+        return self._get_letter(dni.get_number()) == dni.letter
+ 
     def find_missing_num(self, dni_str: str) -> Dni:
-        '''Find the first complete dni valid for the given dni
+        '''Find the first complete dni valid for the given dni_str
+
+        Args:
+            dni_str: The dni for which to find the missing numbers
+
+                It should have '?' in place of the numbers to find
+                
+                Examples:
+                    11111?11H
+                    11_111_?11H
+                    11_1?1_111-H
+                    11_11?_?11_H
+
+                For further details, see DniParser
+        '''
+        return next(self.find_all_possible_dnis(dni_str), None)
+
+    def find_all_possible_dnis(self, dni_str: str) -> Generator[Dni, str, None]:
+        '''Find the all of the valid dnis for the given dni_str
 
         Args:
             dni_str: The dni for which to find the missing numbers
@@ -148,21 +167,19 @@ class DniCalculator:
         if num_missing_digits == 0:
             if self._check_valid(dni):
                 print(f'The given dni is already complete and valid: "{dni_str}"')
-                return dni
+                yield dni
             else:
                 print(f'All digits provided. Unable to find missing ones "{dni_str}"')
                 return None
 
         for attempt in range(10 ** num_missing_digits):
+            # Get the digits in attempt as a list
             missing_digits_attempt = list(str(attempt).zfill(num_missing_digits))
-            for missing_pos, missing_digits_attempt in zip(missing_digits_pos, missing_digits_attempt):
+            for missing_pos, missing_digits_attempt \
+                    in zip(missing_digits_pos, missing_digits_attempt):
                 dni.digits[missing_pos] = missing_digits_attempt
             if self._check_valid(dni):
-                return dni
-
-
-    def find_all_possible_dnis(self, dni: str) -> Generator[Dni, str, None]:
-        yield
+                yield dni
 
 
 def main():

@@ -91,8 +91,7 @@ class TestDniCalculator:
         assert self.dni_calc.find_missing_num('11_111_?11H') == expected_dni
 
     def test_find_missing_num_more_than_one_missing_num(self):
-        for i in range(DniParser.ID_LENGTH_NUMS_ONLY + 1):
-            dni = '?'*i + '1'*(DniParser.ID_LENGTH_NUMS_ONLY-i) + 'H'
+        for dni in self.generate_dnis_with_missing_numbers():
             LOGGER.info(f'Testing {dni}')
             assert self.dni_calc.find_missing_num(dni) is not None
 
@@ -129,6 +128,21 @@ class TestDniCalculator:
     def test_find_missing_num_valid_dni_provided(self):
         expected_dni = Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
         assert self.dni_calc.find_missing_num('11_111_111-H') == expected_dni
+
+    def test_find_all_possible_dnis(self):
+        for dni_to_test in self.generate_dnis_with_missing_numbers(max_missing_numbers=6):
+            LOGGER.info(f'Testing {dni_to_test}')
+            found_dnis = 0
+            for dni in self.dni_calc.find_all_possible_dnis(dni_to_test):
+                found_dnis += 1
+                assert dni is not None
+            assert found_dnis >= 1
+
+
+    def generate_dnis_with_missing_numbers(self, max_missing_numbers=DniParser.ID_LENGTH_NUMS_ONLY):
+        for i in range(max_missing_numbers + 1):
+            dni = '?'*i + '1'*(DniParser.ID_LENGTH_NUMS_ONLY-i) + 'H'
+            yield dni
 
 
 if __name__ == '__main__':
