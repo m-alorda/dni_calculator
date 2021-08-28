@@ -87,7 +87,38 @@ class TestDniCalculator:
         assert self.dni_calc.find_letter('11_111_111') == expected_dni
 
     def test_find_missing_num(self):
-        assert self.dni_calc.find_missing_num('11_111_?11H') == Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
+        expected_dni = Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
+        assert self.dni_calc.find_missing_num('11_111_?11H') == expected_dni
+
+    def test_find_missing_num_invalid_input(self):
+        INVALID_DNIS = (
+            # Invalid length tests
+            '',
+            '1111111',
+            '1111111111',
+            '11_111.111',
+            '11-111.1111-as',
+            '11.111.111-.',
+
+            # Invalid letter tests
+            '1111?111!',
+            '11.1?1.111-=',
+            '11.11?.111-.1',
+            '11_111-??1-.1',
+
+            # Invalid digits tests
+            '1X111111G',
+            '11.1F1.111-E',
+            '11.111.1F1-.1',
+
+             # All digits provided
+            '11111111G',
+            '11.111.111-E',
+            '11.111.111-.1',
+        )
+
+        for invalid_dni in INVALID_DNIS:
+            assert self.dni_calc.find_missing_num(invalid_dni) is None
 
 
 if __name__ == '__main__':
