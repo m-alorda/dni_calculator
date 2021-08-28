@@ -53,8 +53,38 @@ class TestDniParser:
 class TestDniCalculator:
     dni_calc = DniCalculator()
 
+    def test_find_letter_invalid_input(self):
+        INVALID_DNIS = (
+            # Invalid length tests
+            '',
+            '1111111',
+            '11_111.11',
+            '11-111.111-as',
+            '11.111.11-.',
+
+            # Invalid letter tests
+            '11111111!',
+            '11.111.111-=',
+            '11.111.111-.1',
+            '11_111-111-.1',
+
+             # Invalid digits tests
+            '1X111111G',
+            '11.1F1.111-E',
+            '11.111.1F1-.1',
+
+             # Letter provided
+            '11111111G',
+            '11.111.111-E',
+            '11.111.111-.1',
+        )
+
+        for invalid_dni in INVALID_DNIS:
+            assert self.dni_calc.find_letter(invalid_dni) is None
+
     def test_find_letter(self):
-        assert self.dni_calc.find_letter('11_111_111') == Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
+        expected_dni = Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
+        assert self.dni_calc.find_letter('11_111_111') == expected_dni
 
     def test_find_missing_num(self):
         assert self.dni_calc.find_missing_num('11_111_?11H') == Dni(['1', '1', '1', '1', '1', '1', '1', '1'], 'H')
