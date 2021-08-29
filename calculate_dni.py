@@ -78,7 +78,7 @@ class DniParser:
             if digit == self.UNKNOWN_DIGIT:
                 digit = None
             elif not digit.isdigit():
-                print(f'')
+                print(f'Invalid dni: "{dni_str}". Invalid number: "{digit}"')
                 return None
             else:
                 dni.digits[i] = digit
