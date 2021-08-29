@@ -30,7 +30,7 @@ class Dni:
 
     def get_letter_as_str(self) -> str:
         '''Return the letter or "?" if lettter is not known'''
-        return self.letter if self.letter else '?'
+        return self.letter.upper() if self.letter else '?'
 
     def __str__(self):
         return self.get_number_as_str() + self.get_letter_as_str()
