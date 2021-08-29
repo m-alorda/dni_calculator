@@ -7,24 +7,18 @@ from dni_calculator import Dni, DniParser
 class DniCalculator:
     _LETTERS = 'TRWAGMYFPDXBNJZSQVHLCKET'
 
-    def __init__(self):
-        self.parser = DniParser()
-
-    def find_letter(self, dni_str: Union[str, int]) -> Optional[Dni]:
+    def find_letter(self, dni: Dni) -> Optional[Dni]:
         '''Find the letter corresponding to the given dni
 
-        Examples:
-            find_letter 11111111 -> 11111111H
-            find_letter 11_111_111 -> 11111111H
+        Example:
+            find_letter(Dni(11111111)) -> 11111111H
 
         Args:
-            dni_str: The dni written as a number
+            dni: The dni whose letter is to be found.
+                All of its digits have to be present
         '''
-        dni = self.parser.parse_dni_without_letter(dni_str)
-        if dni is None:
-            return None
         if dni.missing_digits and len(dni.missing_digits) != 0:
-            print(f'Invalid dni given: "{dni_str}". '
+            print(f'Invalid dni given: "{dni}". '
                 + 'There cannot be missing numbers when finding a letter')
             return None
         dni.letter = self._get_letter(dni.number)
@@ -43,55 +37,45 @@ class DniCalculator:
         '''
         return self._get_letter(dni.number) == dni.letter
  
-    def find_missing_num(self, dni_str: str) -> Optional[Dni]:
-        '''Find the first complete dni valid for the given dni_str
+    def find_missing_num(self, dni: Dni) -> Optional[Dni]:
+        '''Find the first complete dni valid for the given dni
 
         Args:
-            dni_str: The dni for which to find the missing numbers
+            dni: The dni for which to find the missing numbers
 
-                It should have '?' in place of the numbers to find
+                It should have at least one missing digit. 
+                It also has to contain the letter.
                 
                 Examples:
-                    11111?11H
-                    11_111_?11H
-                    11_1?1_111-H
-                    11_11?_?11_H
-
-                For further details, see DniParser
+                    Dni(11_111_011, 'H', [5])
+                    Dni(11_100_111, 'H', [3, 4])
         '''
-        return next(self.find_all_possible_dnis(dni_str), None)
+        return next(self.find_all_possible_dnis(dni), None)
 
-    def find_all_possible_dnis(self, dni_str: str) -> Generator[Dni, str, None]:
-        '''Find the all of the valid dnis for the given dni_str
+    def find_all_possible_dnis(self, dni: Dni) -> Generator[Dni, str, None]:
+        '''Find the all of the valid dnis for the given dni
 
         Args:
-            dni_str: The dni for which to find the missing numbers
+            dni: The dni for which to find the missing numbers
 
-                It should have '?' in place of the numbers to find
+                It should have at least one missing digit. 
+                It also has to contain the letter.
                 
                 Examples:
-                    11111?11H
-                    11_111_?11H
-                    11_1?1_111-H
-                    11_11?_?11_H
-
-                For further details, see DniParser
+                    Dni(11_111_011, 'H', [5])
+                    Dni(11_100_111, 'H', [3, 4])
         '''
-        dni = self.parser.parse_dni(dni_str)
-        if dni is None:
-            return None
-
         if dni.letter is None:
-            print(f'Cannot fing missing numbers if no letter is given: "{dni_str}"')
+            print(f'Cannot fing missing numbers if no letter is given: "{dni}"')
             return None
 
         num_missing_digits = len(dni.missing_digits)
         if num_missing_digits == 0:
             if self._check_valid(dni):
-                print(f'The given dni is already complete and valid: "{dni_str}"')
+                print(f'The given dni is already complete and valid: "{dni}"')
                 yield dni
             else:
-                print(f'All digits provided. Unable to find missing ones "{dni_str}"')
+                print(f'All digits provided. Unable to find missing ones "{dni}"')
                 return None
 
         missing_digits = dni.missing_digits
@@ -121,7 +105,6 @@ class DniCalculator:
 
     def _get_generator_for_digits(self, digits_pos: Iterable[int]) -> Generator[int, int, None]:
         '''Returns all combinations of values the digits at position digits_pos can have
-
 
         Examples:
             digit_pos=(7,) -> 0, 1, 2, ..., 8, 9

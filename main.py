@@ -1,10 +1,10 @@
 import fire
 
-from dni_calculator import DniCalculator
+from dni_calculator import DniCalculatorProxy
 
 
 def main():
-    fire.Fire(DniCalculator)
+    fire.Fire(DniCalculatorProxy)
 
 
 if __name__ == '__main__':
