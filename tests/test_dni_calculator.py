@@ -19,6 +19,52 @@ class TestDniCalculator:
         (0, [0, 10_000_000, 20_000_000, 30_000_000, 40_000_000, 50_000_000, 60_000_000, 70_000_000, 80_000_000, 90_000_000])
     )
 
+    INVALID_DNIS = (
+        # Invalid length tests
+        '',
+        '1111111',
+        '1111111111',
+        '11_111.1111-a',
+        '11-111.1111-as',
+        '11.111.111-1.',
+
+        # Invalid letter tests
+        '1111?111!',
+        '11.1?1.111-=',
+        '11.11?.111-.1',
+        '11_111-??1-.1',
+
+        # Invalid digits tests
+        '1X111111G',
+        '11.1F1.111-E',
+        '11.111.1F1-.1',
+    )
+
+    INVALID_DNIS_FIND_LETTER = INVALID_DNIS + (
+        # Letter provided
+        '11111111G',
+        '11.111.111-E',
+        '11.111.111-.1',
+
+        # Missing numbers
+        '11111?11',
+        '1111111??',
+        '11.11?.111-',
+        '11.111.??1-.',
+        '11_??1-111-.',
+    )
+
+    INVALID_DNIS_MISSING_NUM = INVALID_DNIS + (
+        # All digits provided
+        '11_111.111'
+        '11111111G',
+        '11.111.111-E',
+        '11.111.111-.1',
+
+        # Missing letter
+        '11_111.1?1?',
+    )
+
     dni_calc = DniCalculator()
 
     def test__get_generator_for_digit(self):
@@ -31,7 +77,7 @@ class TestDniCalculator:
 
     def test__get_generator_for_digits_single_digits(self):
         for digit_pos, expected_numbers in self.DIGIT_TESTS:
-            self.test_get_generator_for_digits((digit_pos,), expected_numbers)
+            self.do_test_get_generator_for_digits((digit_pos,), expected_numbers)
 
     def test__get_generator_for_digits_secuential_numbers(self):
         self.test__get_generator_for_digits_secuential_numbers(largest_digit=5)
@@ -42,7 +88,7 @@ class TestDniCalculator:
             digits_pos = range(Dni.LENGTH_NUMS_ONLY-start_pos, 
                                Dni.LENGTH_NUMS_ONLY)
             expected_numbers = range(10 ** start_pos)
-            self.test_get_generator_for_digits(digits_pos, expected_numbers)
+            self.do_test_get_generator_for_digits(digits_pos, expected_numbers)
 
     def test__get_generator_for_digits(self):
         digits_pos = (3, 6)
@@ -58,10 +104,9 @@ class TestDniCalculator:
             80_000, 80_010, 80_020, 80_030, 80_040, 80_050, 80_060, 80_070, 80_080, 80_090,
             90_000, 90_010, 90_020, 90_030, 90_040, 90_050, 90_060, 90_070, 90_080, 90_090,
         ]
-        self.test_get_generator_for_digits(digits_pos, expected_numbers)
+        self.do_test_get_generator_for_digits(digits_pos, expected_numbers)
 
-    @pytest.mark.skip(reason="This is not a test per-se, but a helper function for the tests")
-    def test_get_generator_for_digits(self, digits_pos: Iterable[int], expected_numbers: Iterable[int]):
+    def do_test_get_generator_for_digits(self, digits_pos: Iterable[int], expected_numbers: Iterable[int]):
         LOGGER.info(f'Testing digits_pos {digits_pos}')
         numbers = self.dni_calc._get_generator_for_digits(digits_pos)
         LOGGER.info(f'Generated numbers are: {numbers}')
@@ -81,40 +126,8 @@ class TestDniCalculator:
         return True
 
     def test_find_letter_invalid_input(self):
-        INVALID_DNIS = (
-            # Invalid length tests
-            '',
-            '1111111',
-            '11_111.11',
-            '11-111.111-as',
-            '11.111.11-.',
-
-            # Invalid letter tests
-            '11111111!',
-            '11.111.111-=',
-            '11.111.111-.1',
-            '11_111-111-.1',
-
-             # Invalid digits tests
-            '1X111111G',
-            '11.1F1.111-E',
-            '11.111.1F1-.1',
-
-             # Letter provided
-            '11111111G',
-            '11.111.111-E',
-            '11.111.111-.1',
-
-            # Missing numbers
-            '11111?11',
-            '1111111??',
-            '11.11?.111-',
-            '11.111.??1-.',
-            '11_??1-111-.',
-        )
-
-        for invalid_dni in INVALID_DNIS:
-            LOGGER.info(f'Testing dni: {invalid_dni}')
+        for invalid_dni in self.INVALID_DNIS_FIND_LETTER:
+            LOGGER.info(f'Testing dni: "{invalid_dni}"')
             assert self.dni_calc.find_letter(invalid_dni) is None
 
     def test_find_letter(self):
@@ -131,38 +144,18 @@ class TestDniCalculator:
             assert self.dni_calc.find_missing_num(dni) is not None
 
     def test_find_missing_num_invalid_input(self):
-        INVALID_DNIS = (
-            # Invalid length tests
-            '',
-            '1111111',
-            '1111111111',
-            '11_111.111',
-            '11-111.1111-as',
-            '11.111.111-.',
-
-            # Invalid letter tests
-            '1111?111!',
-            '11.1?1.111-=',
-            '11.11?.111-.1',
-            '11_111-??1-.1',
-
-            # Invalid digits tests
-            '1X111111G',
-            '11.1F1.111-E',
-            '11.111.1F1-.1',
-
-             # All digits provided
-            '11111111G',
-            '11.111.111-E',
-            '11.111.111-.1',
-        )
-
-        for invalid_dni in INVALID_DNIS:
+        for invalid_dni in self.INVALID_DNIS_MISSING_NUM:
+            LOGGER.info(f'Testing "{invalid_dni}"')
             assert self.dni_calc.find_missing_num(invalid_dni) is None
 
     def test_find_missing_num_valid_dni_provided(self):
         expected_dni = Dni(11_111_111, 'H')
         assert self.dni_calc.find_missing_num('11_111_111-H') == expected_dni
+
+    def test_find_all_possible_dnis_invalid_input(self):
+        for invalid_dni in self.INVALID_DNIS_MISSING_NUM:
+            LOGGER.info(f'Testing "{invalid_dni}"')
+            assert next(self.dni_calc.find_all_possible_dnis(invalid_dni), None) is None
 
     def test_find_all_possible_dnis(self):
         self.test_find_all_possible_dnis(max_missing_numbers=5)

@@ -81,7 +81,7 @@ class DniCalculator:
         if dni is None:
             return None
 
-        if dni.letter == None:
+        if dni.letter is None:
             print(f'Cannot fing missing numbers if no letter is given: "{dni_str}"')
             return None
 
