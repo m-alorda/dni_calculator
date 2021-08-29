@@ -30,6 +30,12 @@ class TestDniParser:
             '1X111111G',
             '11.1F1.111-E',
             '11.111.1F1-.1',
+
+            # Invalid types
+            1111,
+            1.111,
+            [1, 1, 1, 1, 1, 1, 1, 1, 'H'],
+            {'dni': '11_111_111-H'},
         )
 
         for invalid_dni in INVALID_DNIS:
