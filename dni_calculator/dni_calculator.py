@@ -21,6 +21,13 @@ class DniCalculator:
             print(f'Invalid dni given: "{dni}". '
                 + 'There cannot be missing numbers when finding a letter')
             return None
+        if dni.letter is not None:
+            if self._check_valid(dni):
+                print(f'The given dni is already complete and valid: "{dni}"')
+                return dni
+            else:
+                print(f'Letter provided. Wont look for it "{dni}"')
+                return None
         dni.letter = self._get_letter(dni.number)
         return dni
 
