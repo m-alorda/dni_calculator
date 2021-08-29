@@ -4,10 +4,11 @@ import itertools
 from dni_calculator import Dni, DniParser, DniCalculator
 
 
-class DniCalculatorProxy(DniCalculator):
+class DniCalculatorProxy:
 
     def __init__(self):
         self.parser = DniParser()
+        self.dni_calc = DniCalculator()
 
     def find_letter(self, dni_str: Union[str, int]) -> Optional[Dni]:
         '''Find the letter corresponding to the given dni
@@ -22,7 +23,7 @@ class DniCalculatorProxy(DniCalculator):
         dni = self.parser.parse_dni_without_letter(dni_str)
         if dni is None:
             return None
-        return super().find_letter(dni)
+        return self.dni_calc.find_letter(dni)
  
     def find_missing_num(self, dni_str: str) -> Optional[Dni]:
         '''Find the first complete dni valid for the given dni_str
@@ -61,4 +62,4 @@ class DniCalculatorProxy(DniCalculator):
         dni = self.parser.parse_dni(dni_str)
         if dni is None:
             return None
-        yield from super().find_all_possible_dnis(dni)
+        yield from self.dni_calc.find_all_possible_dnis(dni)
