@@ -42,7 +42,7 @@ class DniCalculatorProxy(DniCalculator):
         '''
         return next(self.find_all_possible_dnis(dni_str), None)
 
-    def find_all_possible_dnis(self, dni_str: str) -> Generator[Dni, str, None]:
+    def find_all_possible_dnis(self, dni_str: str) -> Generator[Dni, None, None]:
         '''Find the all of the valid dnis for the given dni_str
 
         Args:

@@ -52,7 +52,7 @@ class DniCalculator:
         '''
         return next(self.find_all_possible_dnis(dni), None)
 
-    def find_all_possible_dnis(self, dni: Dni) -> Generator[Dni, str, None]:
+    def find_all_possible_dnis(self, dni: Dni) -> Generator[Dni, None, None]:
         '''Find the all of the valid dnis for the given dni
 
         Args:
@@ -89,7 +89,7 @@ class DniCalculator:
             if self._check_valid(dni):
                 yield dni
 
-    def _get_generator_for_digit(self, digit_pos: int) -> Generator[int, int, None]:
+    def _get_generator_for_digit(self, digit_pos: int) -> Generator[int, None, None]:
         '''Return the different value the digit at position digit_pos can have
 
         Examples:
@@ -104,7 +104,7 @@ class DniCalculator:
         for number in range(0, 10 ** power, 10**(power-1)):
             yield number
 
-    def _get_generator_for_digits(self, digits_pos: Iterable[int]) -> Generator[int, int, None]:
+    def _get_generator_for_digits(self, digits_pos: Iterable[int]) -> Generator[int, None, None]:
         '''Returns all combinations of values the digits at position digits_pos can have
 
         Examples:
