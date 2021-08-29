@@ -1,4 +1,4 @@
-from typing import Union, Iterable, Generator
+from typing import Union, Iterable, Generator, Optional
 import itertools
 
 from dni_calculator import Dni, DniParser
@@ -10,7 +10,7 @@ class DniCalculator:
     def __init__(self):
         self.parser = DniParser()
 
-    def find_letter(self, dni_str: Union[str, int]) -> Dni:
+    def find_letter(self, dni_str: Union[str, int]) -> Optional[Dni]:
         '''Find the letter corresponding to the given dni
 
         Examples:
@@ -43,7 +43,7 @@ class DniCalculator:
         '''
         return self._get_letter(dni.number) == dni.letter
  
-    def find_missing_num(self, dni_str: str) -> Dni:
+    def find_missing_num(self, dni_str: str) -> Optional[Dni]:
         '''Find the first complete dni valid for the given dni_str
 
         Args:

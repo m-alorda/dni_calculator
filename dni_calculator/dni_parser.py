@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 from dni_calculator import Dni
 
@@ -6,7 +6,7 @@ class DniParser:
     UNKNOWN_DIGIT = '?'
     IGNORED_CHARS = '_-.'
 
-    def parse_dni_without_letter(self, dni_str: Union[str, int, float]) -> Dni:
+    def parse_dni_without_letter(self, dni_str: Union[str, int, float]) -> Optional[Dni]:
         '''Transform a string representation of a dni (without letter) to a Dni
 
         See parse_dni for allowed input
@@ -20,7 +20,7 @@ class DniParser:
 
         return self._parse(dni_str + self.UNKNOWN_DIGIT)
 
-    def parse_dni(self, dni_str: Union[str, int, float]) -> Dni:
+    def parse_dni(self, dni_str: Union[str, int, float]) -> Optional[Dni]:
         '''Tranform a string representation of a dni to a Dni
 
         Args:
@@ -56,7 +56,7 @@ class DniParser:
 
         return dni_str
 
-    def _parse(self, dni_str: str) -> Dni:
+    def _parse(self, dni_str: str) -> Optional[Dni]:
         '''Does the actual parsing as described in parse_dni
 
         Args:
