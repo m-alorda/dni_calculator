@@ -102,6 +102,11 @@ class TestDniCalculator:
         expected_dni = Dni(11_111_111, 'H')
         assert self.dni_calc.find_missing_num(input_dni) == expected_dni
 
+    def test_find_letter_valid_dni_provided(self):
+        input_dni = Dni(11_111_111, 'H')
+        expected_dni = Dni(11_111_111, 'H')
+        assert self.dni_calc.find_letter(input_dni) == expected_dni
+
     def test_find_missing_num_more_than_one_missing_num(self):
         for dni in self._generate_dnis_with_missing_numbers():
             LOGGER.info(f'Testing {dni}')
