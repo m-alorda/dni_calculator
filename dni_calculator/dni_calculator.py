@@ -74,6 +74,7 @@ class DniCalculator:
             if self._check_valid(dni):
                 print(f'The given dni is already complete and valid: "{dni}"')
                 yield dni
+                return None
             else:
                 print(f'All digits provided. Unable to find missing ones "{dni}"')
                 return None
