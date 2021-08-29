@@ -7,13 +7,16 @@ import fire
 
 @dataclass
 class Dni:
+    ID_LENGTH_NUMS_ONLY = 8
+    ID_LENGTH = ID_LENGTH_NUMS_ONLY + 1
+
     digits: List[Optional[str]]
     letter: Optional[str]
 
     def __init__(self, digits=None, letter=None):
         self.digits = (digits
             if digits is not None
-            else [None for _ in range(DniParser.ID_LENGTH_NUMS_ONLY)])
+            else [None for _ in range(Dni.ID_LENGTH_NUMS_ONLY)])
         self.letter = letter
 
     def get_number(self) -> int:
@@ -27,9 +30,6 @@ class Dni:
 
 
 class DniParser:
-    ID_LENGTH_NUMS_ONLY = 8
-    ID_LENGTH = ID_LENGTH_NUMS_ONLY + 1
-
     UNKNOWN_DIGIT = '?'
     IGNORED_CHARS = '_-.'
 
@@ -62,9 +62,9 @@ class DniParser:
     
         dni = Dni()
 
-        if len(dni_str) != self.ID_LENGTH:
+        if len(dni_str) != Dni.ID_LENGTH:
             print(f'Invalid dni: "{dni_str}". '
-                + f'Should be {self.ID_LENGTH} characters long, including the letter')
+                + f'Should be {Dni.ID_LENGTH} characters long, including the letter')
             return None
 
         dni.letter = dni_str[-1]
