@@ -139,9 +139,9 @@ class TestDniCalculator:
             assert found_dnis >= 1
 
 
-    def generate_dnis_with_missing_numbers(self, max_missing_numbers=Dni.ID_LENGTH_NUMS_ONLY):
+    def generate_dnis_with_missing_numbers(self, max_missing_numbers=Dni.LENGTH_NUMS_ONLY):
         for i in range(max_missing_numbers + 1):
-            dni = '?'*i + '1'*(Dni.ID_LENGTH_NUMS_ONLY-i) + 'H'
+            dni = '?'*i + '1'*(Dni.LENGTH_NUMS_ONLY-i) + 'H'
             yield dni
 
 
