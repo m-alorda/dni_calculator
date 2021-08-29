@@ -1,101 +1,7 @@
-from typing import Generator, Optional, List, Union, Iterable
-from dataclasses import dataclass, field
+from typing import Union, Iterable, Generator
 import itertools
 
-import fire
-
-
-@dataclass
-class Dni:
-    LENGTH_NUMS_ONLY = 8
-    LENGTH = LENGTH_NUMS_ONLY + 1
-
-    number: Optional[int] = None
-    letter: Optional[str] = None
-    missing_digits: List[int] = field(default_factory=lambda: [])
-
-    def get_number_as_str(self) -> str:
-        '''Return the number representing unknown digits as "?"
-
-        For example, if number=11_011_111 and missing_digits=[2], 
-        returned value is "11?11111"
-        '''
-        number = self.number if self.number is not None else 0
-        number_as_str = str(number).zfill(Dni.LENGTH_NUMS_ONLY)
-
-        # number is converted to list so that missing digits can be replaced
-        number_as_list = list(number_as_str)
-        if self.missing_digits:
-            for missing_digit in self.missing_digits:
-                number_as_list[missing_digit] = '?'
-
-        return ''.join(number_as_list)
-
-    def get_letter_as_str(self) -> str:
-        '''Return the letter or "?" if lettter is not known'''
-        return self.letter if self.letter else '?'
-
-    def __str__(self):
-        return self.get_number_as_str() + self.get_letter_as_str()
-
-
-class DniParser:
-    UNKNOWN_DIGIT = '?'
-    IGNORED_CHARS = '_-.'
-
-    def parse_dni_without_letter(self, dni_str: Union[str, int]) -> Dni:
-        '''Transform a string representation of a dni (without letter) to a Dni
-
-        See parse_dni for allowed input
-        '''
-        if type(dni_str is int):
-            dni_str = str(dni_str)
-        dni = self.parse_dni(dni_str + self.UNKNOWN_DIGIT)
-
-        return dni
-
-    def parse_dni(self, dni_str: str) -> Dni:
-        '''Tranform a string representation of a dni to a Dni
-
-        Args:
-            dni_str: Valid dni representations are as follows:
-                11111?11H
-                11_111_?11H
-                11_1?1_111-H
-                11_11?_?11_H
-                11.111.?11.H
-                11-111-?11-H
-                11-111-?11-?
-        '''
-        for ignored_char in self.IGNORED_CHARS:
-            dni_str = dni_str.replace(ignored_char, '')
-    
-        dni = Dni()
-
-        if len(dni_str) != Dni.LENGTH:
-            print(f'Invalid dni: "{dni_str}". '
-                + f'Should be {Dni.LENGTH} characters long, including the letter')
-            return None
-
-        dni.letter = dni_str[-1]
-        if dni.letter == self.UNKNOWN_DIGIT:
-            dni.letter = None
-        elif not dni.letter.isalpha():
-            print(f'Invalid dni: "{dni_str}". Invalid letter: "{dni.letter}"')
-            return None
-
-        dni_number_str = dni_str[:-1]
-        missing_digits = []
-        for i, digit in enumerate(dni_number_str):
-            if digit == self.UNKNOWN_DIGIT:
-                missing_digits.append(i)
-            elif not digit.isdigit():
-                print(f'Invalid dni: "{dni_str}". Invalid number: "{digit}"')
-                return None
-        dni.missing_digits = missing_digits
-        dni.number = int(dni_number_str.replace(self.UNKNOWN_DIGIT, '0'))
-
-        return dni
+from dni_calculator import Dni, DniParser
 
 
 class DniCalculator:
@@ -238,12 +144,3 @@ class DniCalculator:
         digits_generator = itertools.product(*digits_generators)
         # return digits_generator
         return map(sum, digits_generator)
-
-
-
-def main():
-    fire.Fire(DniCalculator)
-
-
-if __name__ == '__main__':
-    main()
