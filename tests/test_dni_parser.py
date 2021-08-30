@@ -49,6 +49,7 @@ class TestDniParser:
             ('11.1?1.111-E', Dni(11_101_111, 'E', [3])),
             ('11.111.1?1-.X', Dni(11_111_101, 'X', [6])),
             ('11.111.1?1-.?', Dni(11_111_101, None, [6])),
+            (47968698J, Dni(47_968_698, 'J')),
         )
         for valid_dni, expected_dni in VALID_DNIS:
             LOGGER.info(f'Testing "{valid_dni}"')

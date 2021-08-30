@@ -8,12 +8,14 @@ class DniParser:
     UNKNOWN_DIGIT = '?'
     IGNORED_CHARS = '_-.'
 
-    def parse_dni_without_letter(self, dni_str: Union[str, int, float]) -> Optional[Dni]:
+    def parse_dni_without_letter(self, dni_str: Union[str, int, float, complex]) -> Optional[Dni]:
         '''Transform a string representation of a dni (without letter) to a Dni
 
         See parse_dni for allowed input
         '''
         dni_str = self._pre_parse(dni_str)
+        if not dni_str:
+            return None
 
         if len(dni_str) != Dni.LENGTH_NUMS_ONLY:
             print(f'Invalid dni: "{dni_str}". '
@@ -22,7 +24,7 @@ class DniParser:
 
         return self._parse(dni_str + self.UNKNOWN_DIGIT)
 
-    def parse_dni(self, dni_str: Union[str, int, float]) -> Optional[Dni]:
+    def parse_dni(self, dni_str: Union[str, int, float, complex]) -> Optional[Dni]:
         '''Tranform a string representation of a dni to a Dni
 
         Args:
@@ -36,6 +38,8 @@ class DniParser:
                 11-111-?11-?
         '''
         dni_str = self._pre_parse(dni_str)
+        if not dni_str:
+            return None
 
         if len(dni_str) != Dni.LENGTH:
             print(f'Invalid dni: "{dni_str}". '
@@ -44,9 +48,9 @@ class DniParser:
 
         return self._parse(dni_str)
 
-    def _pre_parse(self, dni_str: Union[str, int, float]) -> str:
+    def _pre_parse(self, dni_str: Union[str, int, float, complex]) -> str:
         '''Removes IGNORED_CHARS from dni_str and cast to str if needed'''
-        if type(dni_str) is int or type(dni_str) is float:
+        if type(dni_str) in (int, float, complex):
             dni_str = str(dni_str)
 
         if type(dni_str) is not str:
