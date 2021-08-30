@@ -44,6 +44,7 @@ class TestDniParser:
 
     def test_parse_dni_valid_dnis(self):
         VALID_DNIS = (
+            ('12345678g', Dni(12_345_678, 'G')),
             ('1?111111G', Dni(10_111_111, 'G', [1])),
             ('11.1?1.111-E', Dni(11_101_111, 'E', [3])),
             ('11.111.1?1-.X', Dni(11_111_101, 'X', [6])),

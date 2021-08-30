@@ -65,7 +65,7 @@ class DniParser:
         '''
         dni = Dni()
 
-        dni.letter = dni_str[-1]
+        dni.letter = dni_str[-1].upper()
         if dni.letter == self.UNKNOWN_DIGIT:
             dni.letter = None
         elif not dni.letter.isalpha():
