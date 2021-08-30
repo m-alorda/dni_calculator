@@ -25,12 +25,13 @@ class DniCalculator:
         if dni.letter is not None:
             if self._check_valid(dni):
                 print(f'The given dni is already complete and valid: "{dni}"')
-                return dni
+                return Dni.from_dni(dni)
             else:
                 print(f'Letter provided. Wont look for it "{dni}"')
                 return None
-        dni.letter = self._get_letter(dni.number)
-        return dni
+        res_dni = Dni.from_dni(dni)
+        res_dni.letter = self._get_letter(dni.number)
+        return res_dni
 
     def _get_letter(self, dni_number: int) -> str:
         '''Return the letter corresponding to the given dni_number'''
@@ -81,21 +82,22 @@ class DniCalculator:
         if num_missing_digits == 0:
             if self._check_valid(dni):
                 print(f'The given dni is already complete and valid: "{dni}"')
-                yield dni
+                yield Dni.from_dni(dni)
                 return None
             else:
                 print(f'All digits provided. Unable to find missing ones "{dni}"')
                 return None
 
-        missing_digits = dni.missing_digits
-        dni.missing_digits = []
+        res_dni = Dni.from_dni(dni)
+        missing_digits = res_dni.missing_digits
+        res_dni.missing_digits = []
         prev_digits_to_check = 0
         for digits_to_check in self._get_generator_for_digits(missing_digits):
-            dni.number -= prev_digits_to_check
-            dni.number += digits_to_check
+            res_dni.number -= prev_digits_to_check
+            res_dni.number += digits_to_check
             prev_digits_to_check = digits_to_check
-            if self._check_valid(dni):
-                yield dni
+            if self._check_valid(res_dni):
+                yield Dni.from_dni(res_dni)
 
     def _get_generator_for_digit(self, digit_pos: int) -> Generator[int, None, None]:
         '''Return the different value the digit at position digit_pos can have

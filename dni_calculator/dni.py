@@ -35,3 +35,7 @@ class Dni:
 
     def __str__(self):
         return self.get_number_as_str() + self.get_letter_as_str()
+
+    @classmethod
+    def from_dni(clss, dni):
+        return Dni(dni.number, dni.letter, [i for i in dni.missing_digits])

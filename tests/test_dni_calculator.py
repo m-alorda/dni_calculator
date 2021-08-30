@@ -107,6 +107,14 @@ class TestDniCalculator:
         expected_dni = Dni(11_111_111, 'H')
         assert self.dni_calc.find_letter(input_dni) == expected_dni
 
+    def test_find_letter_different_instance(self):
+        input_dni = Dni(11_111_111)
+        assert id(self.dni_calc.find_letter(input_dni)) != id(input_dni)
+
+    def test_find_letter_valid_dni_provided_different_instance(self):
+        input_dni = Dni(11_111_111, 'H')
+        assert id(self.dni_calc.find_letter(input_dni)) != id(input_dni)
+
     def test_find_missing_num_more_than_one_missing_num(self):
         for dni in self._generate_dnis_with_missing_numbers():
             LOGGER.info(f'Testing {dni}')
@@ -121,6 +129,14 @@ class TestDniCalculator:
         input_dni = Dni(11_111_111, 'H')
         expected_dni = Dni(11_111_111, 'H')
         assert self.dni_calc.find_missing_num(input_dni) == expected_dni
+
+    def test_find_missing_num_different_instance(self):
+        input_dni = Dni(11_111_110, 'H', missing_digits=[7])
+        assert id(self.dni_calc.find_missing_num(input_dni)) != id(input_dni)
+
+    def test_find_missing_num_valid_dni_provided_different_instance(self):
+        input_dni = Dni(11_111_111, 'H')
+        assert id(self.dni_calc.find_missing_num(input_dni)) != id(input_dni)
 
     def test_find_all_possible_dnis_invalid_input(self):
         for invalid_dni in self.INVALID_DNIS_MISSING_NUM:
@@ -162,6 +178,30 @@ class TestDniCalculator:
             self.dni_calc.find_all_possible_dnis(input_dni),
             expected_dnis
         )
+
+    def test_fing_all_possible_dnis_controlled_data_to_tuple(self):
+        input_dni = Dni(5240700, 'Q', missing_digits=[6, 7])
+        expected_dnis = (
+            Dni(5240704, 'Q'),
+            Dni(5240727, 'Q'),
+            Dni(5240750, 'Q'),
+            Dni(5240773, 'Q'),
+            Dni(5240796, 'Q'),
+        )
+        assert tuple(self.dni_calc.find_all_possible_dnis(input_dni)) == expected_dnis
+
+    def test_find_all_possible_dnis_different_instances(self):
+        input_dni = Dni(5240700, 'Q', missing_digits=[6, 7])
+        prev_dni = None
+        for dni in self.dni_calc.find_all_possible_dnis(input_dni):
+            assert id(dni) != id(input_dni)
+            assert id(dni) != id(prev_dni)
+            prev_dni = dni
+
+    def test_find_all_possible_dnis_valid_dni_provided_different_instances(self):
+        input_dni = Dni(11_111_111, 'H')
+        res_dni = next(self.dni_calc.find_all_possible_dnis(input_dni))
+        assert id(res_dni) != id(input_dni)
 
     def _generate_dnis_with_missing_numbers(self,
                                             max_missing_numbers: int = Dni.LENGTH_NUMS_ONLY
