@@ -149,6 +149,20 @@ class TestDniCalculator:
             (expected_dni,)
         )
 
+    def test_fing_all_possible_dnis_controlled_data(self):
+        input_dni = Dni(5240700, 'Q', missing_digits=[6, 7])
+        expected_dnis = (
+            Dni(5240704, 'Q'),
+            Dni(5240727, 'Q'),
+            Dni(5240750, 'Q'),
+            Dni(5240773, 'Q'),
+            Dni(5240796, 'Q'),
+        )
+        assert utils.compare_iterables(
+            self.dni_calc.find_all_possible_dnis(input_dni),
+            expected_dnis
+        )
+
     def _generate_dnis_with_missing_numbers(self,
                                             max_missing_numbers: int = Dni.LENGTH_NUMS_ONLY
                                            ) -> Generator[Dni, None, None]:
