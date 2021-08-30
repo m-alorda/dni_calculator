@@ -4,6 +4,7 @@ from typing import Optional, List
 
 @dataclass
 class Dni:
+
     LENGTH_NUMS_ONLY = 8
     LENGTH = LENGTH_NUMS_ONLY + 1
 
@@ -14,7 +15,7 @@ class Dni:
     def get_number_as_str(self) -> str:
         '''Return the number representing unknown digits as "?"
 
-        For example, if number=11_011_111 and missing_digits=[2], 
+        For example, if number=11_011_111 and missing_digits=[2],
         returned value is "11?11111"
         '''
         number = self.number if self.number is not None else 0

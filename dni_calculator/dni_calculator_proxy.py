@@ -1,5 +1,4 @@
-from typing import Union, Iterable, Generator, Optional
-import itertools
+from typing import Union, Generator, Optional
 
 from dni_calculator import Dni, DniParser, DniCalculator
 
@@ -24,7 +23,7 @@ class DniCalculatorProxy:
         if dni is None:
             return None
         return self.dni_calc.find_letter(dni)
- 
+
     def find_missing_num(self, dni_str: str) -> Optional[Dni]:
         '''Find the first complete dni valid for the given dni_str
 
@@ -32,7 +31,7 @@ class DniCalculatorProxy:
             dni_str: The dni for which to find the missing numbers
 
                 It should have '?' in place of the numbers to find
-                
+
                 Examples:
                     11111?11H
                     11_111_?11H
@@ -50,7 +49,7 @@ class DniCalculatorProxy:
             dni_str: The dni for which to find the missing numbers
 
                 It should have '?' in place of the numbers to find
-                
+
                 Examples:
                     11111?11H
                     11_111_?11H

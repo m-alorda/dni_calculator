@@ -11,7 +11,7 @@ LOGGER = logging.getLogger()
 
 
 class TestDniCalculator:
-    
+
     DIGIT_TESTS = (
         (7, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
         (6, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]),
@@ -22,7 +22,7 @@ class TestDniCalculator:
 
     INVALID_DNIS_FIND_LETTER = (
         # Letter provided
-        Dni(11_111_111,'G'),
+        Dni(11_111_111, 'G'),
 
         # Missing numbers
         Dni(11_111_011, missing_digits=[3]),
@@ -59,7 +59,7 @@ class TestDniCalculator:
     def test__get_generator_for_digits_secuential_numbers_slow(self, largest_digit=Dni.LENGTH_NUMS_ONLY):
         for start_pos in range(1, largest_digit+1):
             digits_pos = range(
-                Dni.LENGTH_NUMS_ONLY - start_pos, 
+                Dni.LENGTH_NUMS_ONLY - start_pos,
                 Dni.LENGTH_NUMS_ONLY
             )
             expected_numbers = range(10 ** start_pos)
@@ -149,7 +149,7 @@ class TestDniCalculator:
             (expected_dni,)
         )
 
-    def _generate_dnis_with_missing_numbers(self, 
+    def _generate_dnis_with_missing_numbers(self,
                                             max_missing_numbers: int = Dni.LENGTH_NUMS_ONLY
                                            ) -> Generator[Dni, None, None]:
         for i in range(max_missing_numbers + 1):

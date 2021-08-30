@@ -113,7 +113,7 @@ class TestDniCalculatorProxy:
             (expected_dni,)
         )
 
-    def _generate_dnis_with_missing_numbers(self, 
+    def _generate_dnis_with_missing_numbers(self,
                                             max_missing_numbers: int = Dni.LENGTH_NUMS_ONLY
                                            ) -> Generator[str, None, None]:
         for i in range(max_missing_numbers + 1):

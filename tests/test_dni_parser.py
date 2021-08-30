@@ -26,7 +26,7 @@ class TestDniParser:
             '11.111.111-.1',
             '11_111-111-.1',
 
-             # Invalid digits tests
+            # Invalid digits tests
             '1X111111G',
             '11.1F1.111-E',
             '11.111.1F1-.1',

@@ -1,10 +1,11 @@
-from typing import Union, Iterable, Generator, Optional
+from typing import Iterable, Generator, Optional
 import itertools
 
-from dni_calculator import Dni, DniParser
+from dni_calculator import Dni
 
 
 class DniCalculator:
+
     _LETTERS = 'TRWAGMYFPDXBNJZSQVHLCKET'
 
     def find_letter(self, dni: Dni) -> Optional[Dni]:
@@ -43,16 +44,16 @@ class DniCalculator:
                 Example: Dni(11_111_111, 'H')
         '''
         return self._get_letter(dni.number) == dni.letter
- 
+
     def find_missing_num(self, dni: Dni) -> Optional[Dni]:
         '''Find the first complete dni valid for the given dni
 
         Args:
             dni: The dni for which to find the missing numbers
 
-                It should have at least one missing digit. 
+                It should have at least one missing digit.
                 It also has to contain the letter.
-                
+
                 Examples:
                     Dni(11_111_011, 'H', [5])
                     Dni(11_100_111, 'H', [3, 4])
@@ -65,9 +66,9 @@ class DniCalculator:
         Args:
             dni: The dni for which to find the missing numbers
 
-                It should have at least one missing digit. 
+                It should have at least one missing digit.
                 It also has to contain the letter.
-                
+
                 Examples:
                     Dni(11_111_011, 'H', [5])
                     Dni(11_100_111, 'H', [3, 4])
@@ -108,7 +109,7 @@ class DniCalculator:
             digit_pos: A number from 0 to 9
         '''
         power = Dni.LENGTH_NUMS_ONLY - digit_pos
-        for number in range(0, 10 ** power, 10**(power-1)):
+        for number in range(0, 10 ** power, 10 ** (power-1)):
             yield number
 
     def _get_generator_for_digits(self, digits_pos: Iterable[int]) -> Generator[int, None, None]:
@@ -128,7 +129,7 @@ class DniCalculator:
                 has to return the numbers in increasing order.
 
                 For example, if digits_pos=(7, 6), the yielded values will be:
-                0, 10, 20, 30, ... 90, 1, 11, 21, ... 
+                0, 10, 20, 30, ... 90, 1, 11, 21, ...
         '''
         digits_generators = [self._get_generator_for_digit(digit_pos)
                              for digit_pos in digits_pos]

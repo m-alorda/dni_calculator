@@ -2,7 +2,9 @@ from typing import Union, Optional
 
 from dni_calculator import Dni
 
+
 class DniParser:
+
     UNKNOWN_DIGIT = '?'
     IGNORED_CHARS = '_-.'
 
@@ -40,7 +42,7 @@ class DniParser:
                 + f'Should be {Dni.LENGTH} characters long, including the letter')
             return None
 
-        return self._parse(dni_str) 
+        return self._parse(dni_str)
 
     def _pre_parse(self, dni_str: Union[str, int, float]) -> str:
         '''Removes IGNORED_CHARS from dni_str and cast to str if needed'''
@@ -60,7 +62,7 @@ class DniParser:
         '''Does the actual parsing as described in parse_dni
 
         Args:
-            dni_str: An str exactly Dni.LENGTH characters long not 
+            dni_str: An str exactly Dni.LENGTH characters long not
                 containing any of IGNORED_CHARS
         '''
         dni = Dni()
