@@ -1,14 +1,14 @@
-from typing import Iterable, Generator, Optional
+from typing import Iterable, Generator
 import itertools
 
-from dni_calculator import Dni
+from dni_calculator import Dni, DniException
 
 
 class DniCalculator:
 
     _LETTERS = "TRWAGMYFPDXBNJZSQVHLCKET"
 
-    def find_letter(self, dni: Dni) -> Optional[Dni]:
+    def find_letter(self, dni: Dni) -> Dni:
         """Find the letter corresponding to the given dni
 
         Example:
@@ -17,20 +17,24 @@ class DniCalculator:
         Args:
             dni: The dni whose letter is to be found.
                 All of its digits have to be present
+
+        Raises:
+            DniCalculationException: if there are missing digits, or
+                the letter is already provided
         """
         if dni.missing_digits and len(dni.missing_digits) != 0:
-            print(
+            raise DniCalculationException(
                 f'Invalid dni given: "{dni}". '
                 "There cannot be missing numbers when finding a letter"
             )
-            return None
         if dni.letter is not None:
             if self._check_valid(dni):
                 print(f'The given dni is already complete and valid: "{dni}"')
                 return dni.copy()
             else:
-                print(f'Letter provided. Wont look for it "{dni}"')
-                return None
+                raise DniCalculationException(
+                    f'Letter provided. Wont look for it "{dni}"'
+                )
         res_dni = dni.copy()
         res_dni.letter = self._get_letter(dni.number)
         return res_dni
@@ -48,7 +52,7 @@ class DniCalculator:
         """
         return self._get_letter(dni.number) == dni.letter
 
-    def find_missing_num(self, dni: Dni) -> Optional[Dni]:
+    def find_missing_num(self, dni: Dni) -> Dni:
         """Find the first complete dni valid for the given dni
 
         Args:
@@ -60,6 +64,10 @@ class DniCalculator:
                 Examples:
                     Dni(11_111_011, 'H', [5])
                     Dni(11_100_111, 'H', [3, 4])
+
+        Raises:
+            DniCalculationException: if no letter is given or all 
+                digits are provided
         """
         return next(self.find_all_possible_dnis(dni), None)
 
@@ -75,10 +83,15 @@ class DniCalculator:
                 Examples:
                     Dni(11_111_011, 'H', [5])
                     Dni(11_100_111, 'H', [3, 4])
+
+        Raises:
+            DniCalculationException: if no letter is given or all 
+                digits are provided
         """
         if dni.letter is None:
-            print(f'Cannot fing missing numbers if no letter is given: "{dni}"')
-            return None
+            raise DniCalculationException(
+                f'Cannot fing missing numbers if no letter is given: "{dni}"'
+            )
 
         num_missing_digits = len(dni.missing_digits)
         if num_missing_digits == 0:
@@ -87,8 +100,9 @@ class DniCalculator:
                 yield dni.copy()
                 return None
             else:
-                print(f'All digits provided. Unable to find missing ones "{dni}"')
-                return None
+                raise DniCalculationException(
+                    f'All digits provided. Unable to find missing ones "{dni}"'
+                )
 
         res_dni = dni.copy()
         missing_digits = res_dni.missing_digits
@@ -141,5 +155,8 @@ class DniCalculator:
             self._get_generator_for_digit(digit_pos) for digit_pos in digits_pos
         ]
         digits_generator = itertools.product(*digits_generators)
-        # return digits_generator
         return map(sum, digits_generator)
+
+
+class DniCalculationException(DniException):
+    """Exception calculating a Dni missing information"""

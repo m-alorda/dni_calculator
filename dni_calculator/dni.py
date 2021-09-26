@@ -41,3 +41,7 @@ class Dni:
 
     def copy(self):
         return Dni(self.number, self.letter, [i for i in self.missing_digits])
+
+
+class DniException(Exception):
+    """Base exception class for dni_calculator package"""

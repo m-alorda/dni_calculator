@@ -3,7 +3,7 @@ import logging
 
 import pytest
 
-from dni_calculator import DniCalculator, Dni
+from dni_calculator import DniCalculator, Dni, DniCalculationException
 from tests import utils
 
 
@@ -87,8 +87,9 @@ class TestDniCalculator:
 
     def test_find_letter_invalid_input(self):
         for invalid_dni in self.INVALID_DNIS_FIND_LETTER:
-            LOGGER.info(f'Testing dni: "{invalid_dni}"')
-            assert self.dni_calc.find_letter(invalid_dni) is None
+            LOGGER.info(f'Testing dni: "{repr(invalid_dni)}"')
+            with pytest.raises(DniCalculationException):
+                self.dni_calc.find_letter(invalid_dni)
 
     def test_find_letter(self):
         input_dni = Dni(11_111_111)
@@ -115,13 +116,14 @@ class TestDniCalculator:
 
     def test_find_missing_num_more_than_one_missing_num(self):
         for dni in self._generate_dnis_with_missing_numbers():
-            LOGGER.info(f"Testing {dni}")
+            LOGGER.info(f"Testing {repr(dni)}")
             assert self.dni_calc.find_missing_num(dni) is not None
 
     def test_find_missing_num_invalid_input(self):
         for invalid_dni in self.INVALID_DNIS_MISSING_NUM:
-            LOGGER.info(f'Testing "{invalid_dni}"')
-            assert self.dni_calc.find_missing_num(invalid_dni) is None
+            LOGGER.info(f'Testing "{repr(invalid_dni)}"')
+            with pytest.raises(DniCalculationException):
+                self.dni_calc.find_missing_num(invalid_dni)
 
     def test_find_missing_num_valid_dni_provided(self):
         input_dni = Dni(11_111_111, "H")
@@ -138,8 +140,9 @@ class TestDniCalculator:
 
     def test_find_all_possible_dnis_invalid_input(self):
         for invalid_dni in self.INVALID_DNIS_MISSING_NUM:
-            LOGGER.info(f'Testing "{invalid_dni}"')
-            assert next(self.dni_calc.find_all_possible_dnis(invalid_dni), None) is None
+            LOGGER.info(f'Testing "{repr(invalid_dni)}"')
+            with pytest.raises(DniCalculationException):
+                next(self.dni_calc.find_all_possible_dnis(invalid_dni))
 
     def test_find_all_possible_dnis(self):
         self.test_find_all_possible_dnis_slow(max_missing_numbers=5)
@@ -151,7 +154,7 @@ class TestDniCalculator:
         for dni_to_test in self._generate_dnis_with_missing_numbers(
             max_missing_numbers
         ):
-            LOGGER.info(f"Testing {dni_to_test}")
+            LOGGER.info(f"Testing {repr(dni_to_test)}")
             found_dnis = 0
             for dni in self.dni_calc.find_all_possible_dnis(dni_to_test):
                 LOGGER.debug(f"Found dni is {dni}")

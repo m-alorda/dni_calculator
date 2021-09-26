@@ -1,6 +1,6 @@
 from typing import Union, Generator, Optional
 
-from dni_calculator import Dni, DniParser, DniCalculator
+from dni_calculator import Dni, DniParser, DniCalculator, DniException
 
 
 class DniCalculatorProxy:
@@ -18,10 +18,12 @@ class DniCalculatorProxy:
         Args:
             dni_str: The dni written as a number
         """
-        dni = self.parser.parse_dni_without_letter(dni_str)
-        if dni is None:
+        try:
+            dni = self.parser.parse_dni_without_letter(dni_str)
+            return self.dni_calc.find_letter(dni)
+        except DniException as e:
+            print(e)
             return None
-        return self.dni_calc.find_letter(dni)
 
     def find_missing_num(self, dni_str: str) -> Optional[Dni]:
         """Find the first complete dni valid for the given dni_str
@@ -57,7 +59,9 @@ class DniCalculatorProxy:
 
                 For further details, see DniParser
         """
-        dni = self.parser.parse_dni(dni_str)
-        if dni is None:
+        try:
+            dni = self.parser.parse_dni(dni_str)
+            yield from self.dni_calc.find_all_possible_dnis(dni)
+        except DniException as e:
+            print(e)
             return None
-        yield from self.dni_calc.find_all_possible_dnis(dni)
