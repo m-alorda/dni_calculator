@@ -36,5 +36,8 @@ class Dni:
     def __str__(self):
         return self.get_number_as_str() + self.get_letter_as_str()
 
+    def __repr__(self) -> str:
+        return f"Dni(number={self.number}, letter={self.letter}, missing_digits={self.missing_digits})"
+
     def copy(self):
         return Dni(self.number, self.letter, [i for i in self.missing_digits])
