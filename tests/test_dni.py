@@ -29,9 +29,9 @@ class TestDni:
         dni = Dni(11_111_111, 'H')
         assert str(dni) == '11111111H'
 
-    def test_from_dni(self):
+    def test_copy(self):
         dni = Dni(11_111_110, 'H', missing_digits=[7])
-        copied_dni = Dni.from_dni(dni)
+        copied_dni = dni.copy()
         assert dni == copied_dni
         assert id(dni) != id(copied_dni)
         assert id(dni.missing_digits) != id(copied_dni.missing_digits)

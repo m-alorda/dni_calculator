@@ -9,23 +9,23 @@ class DniParser:
     IGNORED_CHARS = '_-.'
 
     def parse_dni_without_letter(self, dni_str: Union[str, int, float, complex]) -> Optional[Dni]:
-        '''Transform a string representation of a dni (without letter) to a Dni
+        """Transform a string representation of a dni (without letter) to a Dni
 
         See parse_dni for allowed input
-        '''
+        """
         dni_str = self._pre_parse(dni_str)
         if not dni_str:
             return None
 
         if len(dni_str) != Dni.LENGTH_NUMS_ONLY:
             print(f'Invalid dni: "{dni_str}". '
-                + f'Should contain {Dni.LENGTH_NUMS_ONLY} numbers')
+                f'Should contain {Dni.LENGTH_NUMS_ONLY} numbers')
             return None
 
         return self._parse(dni_str + self.UNKNOWN_DIGIT)
 
     def parse_dni(self, dni_str: Union[str, int, float, complex]) -> Optional[Dni]:
-        '''Tranform a string representation of a dni to a Dni
+        """Tranform a string representation of a dni to a Dni
 
         Args:
             dni_str: Valid dni representations are as follows:
@@ -36,20 +36,20 @@ class DniParser:
                 11.111.?11.H
                 11-111-?11-H
                 11-111-?11-?
-        '''
+        """
         dni_str = self._pre_parse(dni_str)
         if not dni_str:
             return None
 
         if len(dni_str) != Dni.LENGTH:
             print(f'Invalid dni: "{dni_str}". '
-                + f'Should be {Dni.LENGTH} characters long, including the letter')
+                f'Should be {Dni.LENGTH} characters long, including the letter')
             return None
 
         return self._parse(dni_str)
 
     def _pre_parse(self, dni_str: Union[str, int, float, complex]) -> str:
-        '''Removes IGNORED_CHARS from dni_str and cast to str if needed'''
+        """Removes IGNORED_CHARS from dni_str and cast to str if needed"""
         if type(dni_str) in (int, float, complex):
             dni_str = str(dni_str)
 
@@ -63,12 +63,12 @@ class DniParser:
         return dni_str
 
     def _parse(self, dni_str: str) -> Optional[Dni]:
-        '''Does the actual parsing as described in parse_dni
+        """Does the actual parsing as described in parse_dni
 
         Args:
             dni_str: An str exactly Dni.LENGTH characters long not
                 containing any of IGNORED_CHARS
-        '''
+        """
         dni = Dni()
 
         dni.letter = dni_str[-1].upper()
