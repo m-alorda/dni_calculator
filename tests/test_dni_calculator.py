@@ -54,7 +54,7 @@ class TestDniCalculator:
 
     @pytest.mark.slow
     def test__get_generator_for_digits_secuential_numbers_slow(
-        self, largest_digit=Dni.LENGTH_NUMS_ONLY
+        self, largest_digit: int = Dni.LENGTH_NUMS_ONLY
     ):
         for start_pos in range(1, largest_digit + 1):
             digits_pos = range(Dni.LENGTH_NUMS_ONLY - start_pos, Dni.LENGTH_NUMS_ONLY)
@@ -149,7 +149,7 @@ class TestDniCalculator:
 
     @pytest.mark.slow
     def test_find_all_possible_dnis_slow(
-        self, max_missing_numbers=Dni.LENGTH_NUMS_ONLY
+        self, max_missing_numbers: int = Dni.LENGTH_NUMS_ONLY
     ):
         for dni_to_test in self._generate_dnis_with_missing_numbers(
             max_missing_numbers

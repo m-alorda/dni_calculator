@@ -92,7 +92,7 @@ class TestDniCalculatorProxy:
 
     @pytest.mark.slow
     def test_find_all_possible_dnis_slow(
-        self, max_missing_numbers=Dni.LENGTH_NUMS_ONLY
+        self, max_missing_numbers: int = Dni.LENGTH_NUMS_ONLY
     ):
         for dni_to_test in self._generate_dnis_with_missing_numbers(
             max_missing_numbers

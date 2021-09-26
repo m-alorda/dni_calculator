@@ -19,8 +19,8 @@ class DniCalculator:
                 All of its digits have to be present
 
         Raises:
-            DniCalculationException: if there are missing digits, or
-                the letter is already provided
+            DniCalculationException: if no number is provided, there
+                are missing digits or the letter is already provided
         """
         if dni.missing_digits and len(dni.missing_digits) != 0:
             raise DniCalculationException(
@@ -35,6 +35,10 @@ class DniCalculator:
                 raise DniCalculationException(
                     f'Letter provided. Wont look for it "{dni}"'
                 )
+        if dni.number is None:
+            raise DniCalculationException(
+                f"Cannot find letter if Dni number is None {dni}"
+            )
         res_dni = dni.copy()
         res_dni.letter = self._get_letter(dni.number)
         return res_dni
@@ -49,7 +53,14 @@ class DniCalculator:
         Args:
             dni: A Dni with all digits and letter present
                 Example: Dni(11_111_111, 'H')
+
+        Raises:
+            DniCalculationException: if dni.number is None
         """
+        if dni.number is None:
+            raise DniCalculationException(
+                f"Cannot check if dni is valid if letter is None: {dni}"
+            )
         return self._get_letter(dni.number) == dni.letter
 
     def find_missing_num(self, dni: Dni) -> Dni:
@@ -66,10 +77,10 @@ class DniCalculator:
                     Dni(11_100_111, 'H', [3, 4])
 
         Raises:
-            DniCalculationException: if no letter is given or all 
+            DniCalculationException: if no letter is given or all
                 digits are provided
         """
-        return next(self.find_all_possible_dnis(dni), None)
+        return next(self.find_all_possible_dnis(dni))
 
     def find_all_possible_dnis(self, dni: Dni) -> Generator[Dni, None, None]:
         """Find the all of the valid dnis for the given dni
@@ -85,7 +96,7 @@ class DniCalculator:
                     Dni(11_100_111, 'H', [3, 4])
 
         Raises:
-            DniCalculationException: if no letter is given or all 
+            DniCalculationException: if no letter is given or all
                 digits are provided
         """
         if dni.letter is None:
@@ -155,7 +166,7 @@ class DniCalculator:
             self._get_generator_for_digit(digit_pos) for digit_pos in digits_pos
         ]
         digits_generator = itertools.product(*digits_generators)
-        return map(sum, digits_generator)
+        yield from map(sum, digits_generator)
 
 
 class DniCalculationException(DniException):

@@ -1,12 +1,12 @@
 import logging
-from typing import Iterable
+from typing import Any, Iterable
 import itertools
 
 
 LOGGER = logging.getLogger()
 
 
-def compare_iterables(iterable1: Iterable, iterable2: Iterable) -> bool:
+def compare_iterables(iterable1: Iterable[Any], iterable2: Iterable[Any]) -> bool:
     for x1, x2 in itertools.zip_longest(iterable1, iterable2):
         if x1 is None or x2 is None:
             LOGGER.info(f'Comparing iterables, they are of different length')

@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List, Union
 
 from dni_calculator import Dni, DniException
 
@@ -64,7 +64,7 @@ class DniParser:
             dni_str = str(dni_str)
 
         if type(dni_str) is not str:
-            raise DniParseException(dni_str, f"Unexpected data type: {type(dni_str)}")
+            raise DniParseException(str(dni_str), f"Unexpected data type: {type(dni_str)}")
 
         for ignored_char in self.IGNORED_CHARS:
             dni_str = dni_str.replace(ignored_char, "")
@@ -90,7 +90,7 @@ class DniParser:
             raise DniParseException(dni_str, f'Invalid letter: "{dni.letter}"')
 
         dni_number_str = dni_str[:-1]
-        missing_digits = []
+        missing_digits : List[int] = list()
         for i, digit in enumerate(dni_number_str):
             if digit == self.UNKNOWN_DIGIT:
                 missing_digits.append(i)
