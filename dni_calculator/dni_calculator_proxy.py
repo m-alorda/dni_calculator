@@ -4,7 +4,6 @@ from dni_calculator import Dni, DniParser, DniCalculator
 
 
 class DniCalculatorProxy:
-
     def __init__(self):
         self.parser = DniParser()
         self.dni_calc = DniCalculator()

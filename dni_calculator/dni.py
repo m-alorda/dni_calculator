@@ -5,8 +5,8 @@ from typing import ClassVar, Optional, List
 @dataclass
 class Dni:
 
-    LENGTH_NUMS_ONLY : ClassVar[int] = 8
-    LENGTH : ClassVar[int] = LENGTH_NUMS_ONLY + 1
+    LENGTH_NUMS_ONLY: ClassVar[int] = 8
+    LENGTH: ClassVar[int] = LENGTH_NUMS_ONLY + 1
 
     number: Optional[int] = None
     letter: Optional[str] = None
@@ -25,13 +25,13 @@ class Dni:
         number_as_list = list(number_as_str)
         if self.missing_digits:
             for missing_digit in self.missing_digits:
-                number_as_list[missing_digit] = '?'
+                number_as_list[missing_digit] = "?"
 
-        return ''.join(number_as_list)
+        return "".join(number_as_list)
 
     def get_letter_as_str(self) -> str:
         """Return the letter or "?" if lettter is not known"""
-        return self.letter.upper() if self.letter else '?'
+        return self.letter.upper() if self.letter else "?"
 
     def __str__(self):
         return self.get_number_as_str() + self.get_letter_as_str()

@@ -6,7 +6,7 @@ from dni_calculator import Dni
 
 class DniCalculator:
 
-    _LETTERS = 'TRWAGMYFPDXBNJZSQVHLCKET'
+    _LETTERS = "TRWAGMYFPDXBNJZSQVHLCKET"
 
     def find_letter(self, dni: Dni) -> Optional[Dni]:
         """Find the letter corresponding to the given dni
@@ -19,8 +19,10 @@ class DniCalculator:
                 All of its digits have to be present
         """
         if dni.missing_digits and len(dni.missing_digits) != 0:
-            print(f'Invalid dni given: "{dni}". '
-                'There cannot be missing numbers when finding a letter')
+            print(
+                f'Invalid dni given: "{dni}". '
+                "There cannot be missing numbers when finding a letter"
+            )
             return None
         if dni.letter is not None:
             if self._check_valid(dni):
@@ -111,10 +113,12 @@ class DniCalculator:
             digit_pos: A number from 0 to 9
         """
         power = Dni.LENGTH_NUMS_ONLY - digit_pos
-        for number in range(0, 10 ** power, 10 ** (power-1)):
+        for number in range(0, 10 ** power, 10 ** (power - 1)):
             yield number
 
-    def _get_generator_for_digits(self, digits_pos: Iterable[int]) -> Generator[int, None, None]:
+    def _get_generator_for_digits(
+        self, digits_pos: Iterable[int]
+    ) -> Generator[int, None, None]:
         """Returns all combinations of values the digits at position digits_pos can have
 
         Examples:
@@ -133,8 +137,9 @@ class DniCalculator:
                 For example, if digits_pos=(7, 6), the yielded values will be:
                 0, 10, 20, 30, ... 90, 1, 11, 21, ...
         """
-        digits_generators = [self._get_generator_for_digit(digit_pos)
-                             for digit_pos in digits_pos]
+        digits_generators = [
+            self._get_generator_for_digit(digit_pos) for digit_pos in digits_pos
+        ]
         digits_generator = itertools.product(*digits_generators)
         # return digits_generator
         return map(sum, digits_generator)

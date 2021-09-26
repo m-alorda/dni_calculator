@@ -11,30 +11,27 @@ LOGGER = logging.getLogger()
 
 
 class TestDniCalculator:
-
     DIGIT_TESTS = (
         (7, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
         (6, [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]),
         (5, [0, 100, 200, 300, 400, 500, 600, 700, 800, 900]),
         (3, [0, 10_000, 20_000, 30_000, 40_000, 50_000, 60_000, 70_000, 80_000, 90_000]),
         (0, [0, 10_000_000, 20_000_000, 30_000_000, 40_000_000, 50_000_000, 60_000_000, 70_000_000, 80_000_000, 90_000_000])
-    )
+    )  # fmt: skip
 
     INVALID_DNIS_FIND_LETTER = (
         # Letter provided
-        Dni(11_111_111, 'G'),
-
+        Dni(11_111_111, "G"),
         # Missing numbers
         Dni(11_111_011, missing_digits=[3]),
         Dni(11_111_011, missing_digits=[5, 7]),
-        Dni(11_111_011, 'H', missing_digits=[3]),
+        Dni(11_111_011, "H", missing_digits=[3]),
     )
 
     INVALID_DNIS_MISSING_NUM = (
         # All digits provided
         Dni(11_111_111),
-        Dni(11_111_111, 'G'),
-
+        Dni(11_111_111, "G"),
         # Missing letter
         Dni(11_111_101, missing_digits=[4]),
     )
@@ -43,9 +40,9 @@ class TestDniCalculator:
 
     def test__get_generator_for_digit(self):
         for digit_pos, expected_numbers in self.DIGIT_TESTS:
-            LOGGER.info(f'Testing digit_pos {digit_pos}')
+            LOGGER.info(f"Testing digit_pos {digit_pos}")
             numbers = self.dni_calc._get_generator_for_digit(digit_pos)
-            LOGGER.info(f'Generated numbers are: {numbers}')
+            LOGGER.info(f"Generated numbers are: {numbers}")
             assert utils.compare_iterables(numbers, expected_numbers)
 
     def test__get_generator_for_digits_single_digits(self):
@@ -56,12 +53,11 @@ class TestDniCalculator:
         self.test__get_generator_for_digits_secuential_numbers_slow(largest_digit=5)
 
     @pytest.mark.slow
-    def test__get_generator_for_digits_secuential_numbers_slow(self, largest_digit=Dni.LENGTH_NUMS_ONLY):
-        for start_pos in range(1, largest_digit+1):
-            digits_pos = range(
-                Dni.LENGTH_NUMS_ONLY - start_pos,
-                Dni.LENGTH_NUMS_ONLY
-            )
+    def test__get_generator_for_digits_secuential_numbers_slow(
+        self, largest_digit=Dni.LENGTH_NUMS_ONLY
+    ):
+        for start_pos in range(1, largest_digit + 1):
+            digits_pos = range(Dni.LENGTH_NUMS_ONLY - start_pos, Dni.LENGTH_NUMS_ONLY)
             expected_numbers = range(10 ** start_pos)
             self.do_test_get_generator_for_digits(digits_pos, expected_numbers)
 
@@ -78,13 +74,15 @@ class TestDniCalculator:
             70_000, 70_010, 70_020, 70_030, 70_040, 70_050, 70_060, 70_070, 70_080, 70_090,
             80_000, 80_010, 80_020, 80_030, 80_040, 80_050, 80_060, 80_070, 80_080, 80_090,
             90_000, 90_010, 90_020, 90_030, 90_040, 90_050, 90_060, 90_070, 90_080, 90_090,
-        ]
+        ]  # fmt: skip
         self.do_test_get_generator_for_digits(digits_pos, expected_numbers)
 
-    def do_test_get_generator_for_digits(self, digits_pos: Iterable[int], expected_numbers: Iterable[int]):
-        LOGGER.info(f'Testing digits_pos {digits_pos}')
+    def do_test_get_generator_for_digits(
+        self, digits_pos: Iterable[int], expected_numbers: Iterable[int]
+    ):
+        LOGGER.info(f"Testing digits_pos {digits_pos}")
         numbers = self.dni_calc._get_generator_for_digits(digits_pos)
-        LOGGER.info(f'Generated numbers are: {numbers}')
+        LOGGER.info(f"Generated numbers are: {numbers}")
         assert utils.compare_iterables(numbers, expected_numbers)
 
     def test_find_letter_invalid_input(self):
@@ -94,17 +92,17 @@ class TestDniCalculator:
 
     def test_find_letter(self):
         input_dni = Dni(11_111_111)
-        expected_dni = Dni(11_111_111, 'H')
+        expected_dni = Dni(11_111_111, "H")
         assert self.dni_calc.find_letter(input_dni) == expected_dni
 
     def test_find_missing_num(self):
-        input_dni = Dni(11_111_011, 'H', missing_digits=[5])
-        expected_dni = Dni(11_111_111, 'H')
+        input_dni = Dni(11_111_011, "H", missing_digits=[5])
+        expected_dni = Dni(11_111_111, "H")
         assert self.dni_calc.find_missing_num(input_dni) == expected_dni
 
     def test_find_letter_valid_dni_provided(self):
-        input_dni = Dni(11_111_111, 'H')
-        expected_dni = Dni(11_111_111, 'H')
+        input_dni = Dni(11_111_111, "H")
+        expected_dni = Dni(11_111_111, "H")
         assert self.dni_calc.find_letter(input_dni) == expected_dni
 
     def test_find_letter_different_instance(self):
@@ -112,12 +110,12 @@ class TestDniCalculator:
         assert id(self.dni_calc.find_letter(input_dni)) != id(input_dni)
 
     def test_find_letter_valid_dni_provided_different_instance(self):
-        input_dni = Dni(11_111_111, 'H')
+        input_dni = Dni(11_111_111, "H")
         assert id(self.dni_calc.find_letter(input_dni)) != id(input_dni)
 
     def test_find_missing_num_more_than_one_missing_num(self):
         for dni in self._generate_dnis_with_missing_numbers():
-            LOGGER.info(f'Testing {dni}')
+            LOGGER.info(f"Testing {dni}")
             assert self.dni_calc.find_missing_num(dni) is not None
 
     def test_find_missing_num_invalid_input(self):
@@ -126,16 +124,16 @@ class TestDniCalculator:
             assert self.dni_calc.find_missing_num(invalid_dni) is None
 
     def test_find_missing_num_valid_dni_provided(self):
-        input_dni = Dni(11_111_111, 'H')
-        expected_dni = Dni(11_111_111, 'H')
+        input_dni = Dni(11_111_111, "H")
+        expected_dni = Dni(11_111_111, "H")
         assert self.dni_calc.find_missing_num(input_dni) == expected_dni
 
     def test_find_missing_num_different_instance(self):
-        input_dni = Dni(11_111_110, 'H', missing_digits=[7])
+        input_dni = Dni(11_111_110, "H", missing_digits=[7])
         assert id(self.dni_calc.find_missing_num(input_dni)) != id(input_dni)
 
     def test_find_missing_num_valid_dni_provided_different_instance(self):
-        input_dni = Dni(11_111_111, 'H')
+        input_dni = Dni(11_111_111, "H")
         assert id(self.dni_calc.find_missing_num(input_dni)) != id(input_dni)
 
     def test_find_all_possible_dnis_invalid_input(self):
@@ -147,51 +145,53 @@ class TestDniCalculator:
         self.test_find_all_possible_dnis_slow(max_missing_numbers=5)
 
     @pytest.mark.slow
-    def test_find_all_possible_dnis_slow(self, max_missing_numbers=Dni.LENGTH_NUMS_ONLY):
-        for dni_to_test in self._generate_dnis_with_missing_numbers(max_missing_numbers):
-            LOGGER.info(f'Testing {dni_to_test}')
+    def test_find_all_possible_dnis_slow(
+        self, max_missing_numbers=Dni.LENGTH_NUMS_ONLY
+    ):
+        for dni_to_test in self._generate_dnis_with_missing_numbers(
+            max_missing_numbers
+        ):
+            LOGGER.info(f"Testing {dni_to_test}")
             found_dnis = 0
             for dni in self.dni_calc.find_all_possible_dnis(dni_to_test):
-                LOGGER.debug(f'Found dni is {dni}')
+                LOGGER.debug(f"Found dni is {dni}")
                 assert dni is not None
                 found_dnis += 1
             assert found_dnis >= 1
 
     def test_find_all_possible_dnis_valid_dni_provided(self):
-        input_dni = Dni(11_111_111, 'H')
-        expected_dni = Dni(11_111_111, 'H')
+        input_dni = Dni(11_111_111, "H")
+        expected_dni = Dni(11_111_111, "H")
         assert utils.compare_iterables(
-            self.dni_calc.find_all_possible_dnis(input_dni),
-            (expected_dni,)
+            self.dni_calc.find_all_possible_dnis(input_dni), (expected_dni,)
         )
 
     def test_fing_all_possible_dnis_controlled_data(self):
-        input_dni = Dni(5240700, 'Q', missing_digits=[6, 7])
+        input_dni = Dni(5240700, "Q", missing_digits=[6, 7])
         expected_dnis = (
-            Dni(5240704, 'Q'),
-            Dni(5240727, 'Q'),
-            Dni(5240750, 'Q'),
-            Dni(5240773, 'Q'),
-            Dni(5240796, 'Q'),
+            Dni(5240704, "Q"),
+            Dni(5240727, "Q"),
+            Dni(5240750, "Q"),
+            Dni(5240773, "Q"),
+            Dni(5240796, "Q"),
         )
         assert utils.compare_iterables(
-            self.dni_calc.find_all_possible_dnis(input_dni),
-            expected_dnis
+            self.dni_calc.find_all_possible_dnis(input_dni), expected_dnis
         )
 
     def test_fing_all_possible_dnis_controlled_data_to_tuple(self):
-        input_dni = Dni(5240700, 'Q', missing_digits=[6, 7])
+        input_dni = Dni(5240700, "Q", missing_digits=[6, 7])
         expected_dnis = (
-            Dni(5240704, 'Q'),
-            Dni(5240727, 'Q'),
-            Dni(5240750, 'Q'),
-            Dni(5240773, 'Q'),
-            Dni(5240796, 'Q'),
+            Dni(5240704, "Q"),
+            Dni(5240727, "Q"),
+            Dni(5240750, "Q"),
+            Dni(5240773, "Q"),
+            Dni(5240796, "Q"),
         )
         assert tuple(self.dni_calc.find_all_possible_dnis(input_dni)) == expected_dnis
 
     def test_find_all_possible_dnis_different_instances(self):
-        input_dni = Dni(5240700, 'Q', missing_digits=[6, 7])
+        input_dni = Dni(5240700, "Q", missing_digits=[6, 7])
         prev_dni = None
         for dni in self.dni_calc.find_all_possible_dnis(input_dni):
             assert id(dni) != id(input_dni)
@@ -199,18 +199,18 @@ class TestDniCalculator:
             prev_dni = dni
 
     def test_find_all_possible_dnis_valid_dni_provided_different_instances(self):
-        input_dni = Dni(11_111_111, 'H')
+        input_dni = Dni(11_111_111, "H")
         res_dni = next(self.dni_calc.find_all_possible_dnis(input_dni))
         assert id(res_dni) != id(input_dni)
 
-    def _generate_dnis_with_missing_numbers(self,
-                                            max_missing_numbers: int = Dni.LENGTH_NUMS_ONLY
-                                           ) -> Generator[Dni, None, None]:
+    def _generate_dnis_with_missing_numbers(
+        self, max_missing_numbers: int = Dni.LENGTH_NUMS_ONLY
+    ) -> Generator[Dni, None, None]:
         for i in range(max_missing_numbers + 1):
-            number = int('1' * (Dni.LENGTH_NUMS_ONLY-i) or 0)
+            number = int("1" * (Dni.LENGTH_NUMS_ONLY - i) or 0)
             missing_digits = list(range(i))
-            yield Dni(number, 'H', missing_digits)
+            yield Dni(number, "H", missing_digits)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

@@ -5,10 +5,12 @@ from dni_calculator import Dni
 
 class DniParser:
 
-    UNKNOWN_DIGIT = '?'
-    IGNORED_CHARS = '_-.'
+    UNKNOWN_DIGIT = "?"
+    IGNORED_CHARS = "_-."
 
-    def parse_dni_without_letter(self, dni_str: Union[str, int, float, complex]) -> Optional[Dni]:
+    def parse_dni_without_letter(
+        self, dni_str: Union[str, int, float, complex]
+    ) -> Optional[Dni]:
         """Transform a string representation of a dni (without letter) to a Dni
 
         See parse_dni for allowed input
@@ -18,8 +20,10 @@ class DniParser:
             return None
 
         if len(dni_str) != Dni.LENGTH_NUMS_ONLY:
-            print(f'Invalid dni: "{dni_str}". '
-                f'Should contain {Dni.LENGTH_NUMS_ONLY} numbers')
+            print(
+                f'Invalid dni: "{dni_str}". '
+                f"Should contain {Dni.LENGTH_NUMS_ONLY} numbers"
+            )
             return None
 
         return self._parse(dni_str + self.UNKNOWN_DIGIT)
@@ -42,8 +46,10 @@ class DniParser:
             return None
 
         if len(dni_str) != Dni.LENGTH:
-            print(f'Invalid dni: "{dni_str}". '
-                f'Should be {Dni.LENGTH} characters long, including the letter')
+            print(
+                f'Invalid dni: "{dni_str}". '
+                f"Should be {Dni.LENGTH} characters long, including the letter"
+            )
             return None
 
         return self._parse(dni_str)
@@ -55,10 +61,10 @@ class DniParser:
 
         if type(dni_str) is not str:
             print(f'Invalid dni received: "{dni_str}"')
-            return ''
+            return ""
 
         for ignored_char in self.IGNORED_CHARS:
-            dni_str = dni_str.replace(ignored_char, '')
+            dni_str = dni_str.replace(ignored_char, "")
 
         return dni_str
 
@@ -87,6 +93,6 @@ class DniParser:
                 print(f'Invalid dni: "{dni_str}". Invalid number: "{digit}"')
                 return None
         dni.missing_digits = missing_digits
-        dni.number = int(dni_number_str.replace(self.UNKNOWN_DIGIT, '0'))
+        dni.number = int(dni_number_str.replace(self.UNKNOWN_DIGIT, "0"))
 
         return dni

@@ -14,28 +14,25 @@ class TestDniParser:
     def test_parse_dni_invalid_dnis(self):
         INVALID_DNIS = (
             # Invalid length tests
-            '',
-            '11111111',
-            '11_111.111',
-            '11-111.111-as',
-            '11.111.111-.',
-
+            "",
+            "11111111",
+            "11_111.111",
+            "11-111.111-as",
+            "11.111.111-.",
             # Invalid letter tests
-            '11111111!',
-            '11.111.111-=',
-            '11.111.111-.1',
-            '11_111-111-.1',
-
+            "11111111!",
+            "11.111.111-=",
+            "11.111.111-.1",
+            "11_111-111-.1",
             # Invalid digits tests
-            '1X111111G',
-            '11.1F1.111-E',
-            '11.111.1F1-.1',
-
+            "1X111111G",
+            "11.1F1.111-E",
+            "11.111.1F1-.1",
             # Invalid types
             1111,
             1.111,
-            [1, 1, 1, 1, 1, 1, 1, 1, 'H'],
-            {'dni': '11_111_111-H'},
+            [1, 1, 1, 1, 1, 1, 1, 1, "H"],
+            {"dni": "11_111_111-H"},
         )
 
         for invalid_dni in INVALID_DNIS:
@@ -44,12 +41,12 @@ class TestDniParser:
 
     def test_parse_dni_valid_dnis(self):
         VALID_DNIS = (
-            ('12345678g', Dni(12_345_678, 'G')),
-            ('1?111111G', Dni(10_111_111, 'G', [1])),
-            ('11.1?1.111-E', Dni(11_101_111, 'E', [3])),
-            ('11.111.1?1-.X', Dni(11_111_101, 'X', [6])),
-            ('11.111.1?1-.?', Dni(11_111_101, None, [6])),
-            (47968698J, Dni(47_968_698, 'J')),
+            ("12345678g", Dni(12_345_678, "G")),
+            ("1?111111G", Dni(10_111_111, "G", [1])),
+            ("11.1?1.111-E", Dni(11_101_111, "E", [3])),
+            ("11.111.1?1-.X", Dni(11_111_101, "X", [6])),
+            ("11.111.1?1-.?", Dni(11_111_101, None, [6])),
+            (47968698j, Dni(47_968_698, "J")),
         )
         for valid_dni, expected_dni in VALID_DNIS:
             LOGGER.info(f'Testing "{valid_dni}"')
@@ -57,5 +54,5 @@ class TestDniParser:
             assert dni == expected_dni
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()
